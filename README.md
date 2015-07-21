@@ -2,6 +2,7 @@ This repository contains code to build cosponsorship networks from bills passed 
 
 - [interactive demo](http://f.briatte.org/parlviz/assembleia)
 - [static plots](http://f.briatte.org/parlviz/assembleia/plots.html)
+- [more countries](https://github.com/briatte/parlnet)
 
 # HOWTO
 
