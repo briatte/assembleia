@@ -1,7 +1,7 @@
 This repository contains code to build cosponsorship networks from bills passed in of the [Portuguese Parliament](http://www.parlamento.pt/) .
 
-- [interactive demo](http://briatte.org/assembleia)
-- [static plots](http://briatte.org/assembleia/plots.html)
+- [interactive demo](http://f.briatte.org/parlviz/assembleia)
+- [static plots](http://f.briatte.org/parlviz/assembleia/plots.html)
 
 # HOWTO
 
