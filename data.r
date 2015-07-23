@@ -162,11 +162,11 @@ for (i in c("XII", "XI", "X", "IX", "VIII", "VII", "VI")) {
       filter(nchar(title) > 3) %>% # remove a few faulty rows
       select(-num)
 
-    write_csv(b, index)
+    write.csv(b, index, row.names = NULL)
 
   }
 
-  b = read_csv(index)
+  b = read.csv(index, stringsAsFactors = FALSE)
 
   cat("Legislature", sprintf("%4s", i), ":",
       sprintf("%4.0f", nrow(b)), "bills\n")
@@ -199,7 +199,7 @@ for (i in c("XII", "XI", "X", "IX", "VIII", "VII", "VI")) {
 if(!file.exists(bills)) {
 
   b = list.files("data", "^bills-index", full.names = TRUE) %>%
-    lapply(read_csv) %>%
+    lapply(read.csv, stringsAsFactors = FALSE) %>%
     bind_rows
 
   cat("Parsing", nrow(b), "bills...\n")
@@ -227,11 +227,11 @@ if(!file.exists(bills)) {
 
   b$n_au = 1 + str_count(b$sponsors, ";")
 
-  write_csv(b[ b$sponsors != "", ], bills)
+  write.csv(b[ b$sponsors != "", ], bills, row.names = NULL)
 
 }
 
-b = read_csv(bills)
+b = read.csv(bills, stringsAsFactors = FALSE)
 
 # download sponsors
 
@@ -339,11 +339,11 @@ if(!file.exists(sponsors)) {
     mutate(nyears = cumsum(nyears) - nyears) %>%
     select(-order)
 
-  write_csv(s, sponsors)
+  write.csv(s, sponsors, row.names = NULL)
 
 }
 
-s = read_csv(sponsors)
+s = read.csv(sponsors, stringsAsFactors = FALSE)
 
 # download sponsor photos (rerun to fix network errors)
 

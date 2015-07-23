@@ -69,7 +69,7 @@ for (i in c("XII", "XI", "X")) {
 
 }
 
-write_csv(c, "data/committees.csv")
+write.csv(c, "data/committees.csv", row.names = NULL)
 
 # unique identifier
 c$id = paste0(c$legislature, c$name)

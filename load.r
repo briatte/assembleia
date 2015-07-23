@@ -20,5 +20,4 @@ library(grid)
 # extras
 
 library(httr)      # handle POST HTTP requests
-library(readr)     # quicker i/o for CSV files
 library(rvest)     # easier HTML parsing
