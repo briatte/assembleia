@@ -162,7 +162,7 @@ for (i in c("XII", "XI", "X", "IX", "VIII", "VII", "VI")) {
       filter(nchar(title) > 3) %>% # remove a few faulty rows
       select(-num)
 
-    write.csv(b, index, row.names = NULL)
+    write.csv(b, index, row.names = FALSE)
 
   }
 
@@ -227,7 +227,7 @@ if(!file.exists(bills)) {
 
   b$n_au = 1 + str_count(b$sponsors, ";")
 
-  write.csv(b[ b$sponsors != "", ], bills, row.names = NULL)
+  write.csv(b[ b$sponsors != "", ], bills, row.names = FALSE)
 
 }
 
@@ -339,7 +339,7 @@ if(!file.exists(sponsors)) {
     mutate(nyears = cumsum(nyears) - nyears) %>%
     select(-order)
 
-  write.csv(s, sponsors, row.names = NULL)
+  write.csv(s, sponsors, row.names = FALSE)
 
 }
 

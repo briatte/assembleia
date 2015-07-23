@@ -6,11 +6,9 @@ library(XML)
 
 # networks
 
-library(igraph) # keep first
+library(rgexf) # keep first
 library(network)
 library(sna)
-library(rgexf)
-library(tnet)
 
 # plots
 
@@ -19,5 +17,5 @@ library(grid)
 
 # extras
 
-library(httr)      # handle POST HTTP requests
+library(httr)      # handle POST requests
 library(rvest)     # easier HTML parsing

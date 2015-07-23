@@ -116,6 +116,11 @@ for(ii in legislatures %>% names) {
   n %v% "nyears" = as.numeric(sp[ network.vertex.names(n), "nyears" ])
   n %v% "photo" = sp[ network.vertex.names(n), "photo" ]
 
+	# unweighted degree
+	n %v% "degree" = degree(n)
+	q = n %v% "degree"
+	q = as.numeric(cut(q, unique(quantile(q)), include.lowest = TRUE))
+
   set.edge.attribute(n, "source", as.character(edges[, 1]))
   set.edge.attribute(n, "target", as.character(edges[, 2]))
 
@@ -127,27 +132,12 @@ for(ii in legislatures %>% names) {
   set.edge.attribute(n, "gsw", edges$gsw) # Gross-Shalizi weights
 
   #
-  # weighted measures
-  #
-
-  n = get_modularity(n, weights = "raw")
-  n = get_modularity(n, weights = "nfw")
-  n = get_modularity(n, weights = "gsw")
-
-  n = get_centrality(n, weights = "raw")
-  n = get_centrality(n, weights = "nfw")
-  n = get_centrality(n, weights = "gsw")
-
-  #
   # network plot
   #
 
   if(plot) {
 
-    q = n %v% "degree"
-    q = as.numeric(cut(q, unique(quantile(q)), include.lowest = TRUE))
-
-    ggnet_save(n, file = paste0("plots/net_pt", legislatures[ ii ]),
+    save_plot(n, file = paste0("plots/net_pt", legislatures[ ii ]),
                i = colors[ sp[ n %e% "source", "party" ] ],
                j = colors[ sp[ n %e% "target", "party" ] ],
                q, colors, order)
@@ -168,7 +158,7 @@ for(ii in legislatures %>% names) {
 
   if(gexf) {
 
-    get_gexf(paste0("net_pt", legislatures[ ii ]), n, meta, mode, colors,
+    save_gexf(paste0("net_pt", legislatures[ ii ]), n, meta, mode, colors,
              extra = "constituency")
 
   }
