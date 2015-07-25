@@ -10,6 +10,8 @@ Replicate by running `make.r` in R.
 
 The `data.r` script downloads information on bills and sponsors. Unfortunately, the scraper is _highly_ error-prone, as explained at the top of the script. All photos should download fine, however.
 
+See also Ricardo Lafuente's [Python scraper for bills](https://github.com/rlafuente/scraper-iniciativas), which also runs slowly but might be more efficient overall, as well as his [listing of Portuguese MPs](https://github.com/centraldedados/parlamento-deputados), which is similar to the one collected by this repository.
+
 The `build.r` script then assembles the edge lists and plots the networks, with the help of a few routines coded into `functions.r`. Adjust the `plot`, `gexf` and `mode` parameters to skip the plots or to change the node placement algorithm.
 
 # DATA

@@ -379,3 +379,20 @@ for(i in p) {
 }
 
 cat("\n", n_distinct(s$url[ s$photo == "0" ]), "photos failed to download.\n")
+
+# fix missing age values (source: WP-PT unless noted otherwise)
+# s$born[ s$name == "Carlos Matos" ] = 0000
+s$born[ s$name == "Daniel Campelo" ] = 1960
+# s$born[ s$name == "Eduardo Casimiro Silva" ] = 0000
+# s$born[ s$name == "Fernando Pésinho" ] = 0000
+s$born[ s$name == "Isabel Vigia" ] = 1953 # http://politicos.br101.org/isabel-vigia.html
+s$born[ s$name == "João Bernardo" ] = 1946
+s$born[ s$name == "José Niza" ] = 1938
+# s$born[ s$name == "José Silvano" ] = 0000
+s$born[ s$name == "Luís Miranda" ] = 1969
+s$born[ s$name == "Margarida  Botelho" ] = 1979
+# s$born[ s$name == "Maria da Luz Rosinha" ] = 0000
+# s$born[ s$name == "Ofélia Guerreiro" ] = 0000
+# s$born[ s$name == "Paula Carloto" ] = 0000
+# s$born[ s$name == "Ricardo Vieira" ] = 0000
+# s$born[ s$name == "Rui Miguel Ribeiro" ] = 0000
