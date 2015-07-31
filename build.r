@@ -116,10 +116,10 @@ for(ii in legislatures %>% names) {
   n %v% "nyears" = as.numeric(sp[ network.vertex.names(n), "nyears" ])
   n %v% "photo" = sp[ network.vertex.names(n), "photo" ]
 
-	# unweighted degree
-	n %v% "degree" = degree(n)
-	q = n %v% "degree"
-	q = as.numeric(cut(q, unique(quantile(q)), include.lowest = TRUE))
+  # unweighted degree
+  n %v% "degree" = degree(n)
+  q = n %v% "degree"
+  q = as.numeric(cut(q, unique(quantile(q)), include.lowest = TRUE))
 
   set.edge.attribute(n, "source", as.character(edges[, 1]))
   set.edge.attribute(n, "target", as.character(edges[, 2]))
