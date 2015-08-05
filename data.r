@@ -14,7 +14,7 @@ bills = "data/bills.csv"
 
 # it is also highly unlikely that the loop below will actually run as a loop:
 # you will probably need to run the script several times, by removing the
-# legislatures that you managed to download from the argument to the for()
+# legislatures that you managed to download from the argument to the for ()
 # loop; this is how ridiculously dysfunctional this script is
 
 # last, sponsor biographies are not available for legislatures 1-5, so there
@@ -196,7 +196,7 @@ for (i in c("XII", "XI", "X", "IX", "VIII", "VII", "VI")) {
 
 # parse bills and sponsors
 
-if(!file.exists(bills)) {
+if (!file.exists(bills)) {
 
   b = list.files("data", "^bills-index", full.names = TRUE) %>%
     lapply(read.csv, stringsAsFactors = FALSE) %>%
@@ -211,7 +211,7 @@ if(!file.exists(bills)) {
 
   w = txtProgressBar(0, length(p), style = 3)
 
-  for(i in p) {
+  for (i in p) {
 
     setTxtProgressBar(w, which(p == i))
 
@@ -235,7 +235,7 @@ b = read.csv(bills, stringsAsFactors = FALSE)
 
 # download sponsors
 
-if(!file.exists(sponsors)) {
+if (!file.exists(sponsors)) {
 
   a = strsplit(b$sponsors, ";") %>% unlist %>% unique
   a = paste0("/DeputadoGP/Paginas/Biografia.aspx?BID=", a)
@@ -353,7 +353,7 @@ cat("\nDownloading photos for", length(p), "sponsors...\n")
 
 w = txtProgressBar(0, length(p), style = 3)
 
-for(i in p) {
+for (i in p) {
 
   setTxtProgressBar(w, which(p == i))
 
@@ -361,18 +361,18 @@ for(i in p) {
            "photos/", i) %>%
     gsub("&type=deputado", ".jpg", .)
 
-  if(!file.exists(f))
+  if (!file.exists(f))
     try(download.file(i, f, mode = "wb", quiet = TRUE),
         silent = TRUE)
 
-  if(!file.info(f)$size) {
+  if (!file.info(f)$size) {
 
-    s$photo[ s$photo == i ] = 0
+    s$photo[ s$photo == i ] = NA
     file.remove(f)
 
   } else {
 
-    s$photo[ s$photo == i ] = 1
+    s$photo[ s$photo == i ] = f
 
   }
 
@@ -396,3 +396,47 @@ s$born[ s$name == "Margarida  Botelho" ] = 1979
 # s$born[ s$name == "Paula Carloto" ] = 0000
 # s$born[ s$name == "Ricardo Vieira" ] = 0000
 # s$born[ s$name == "Rui Miguel Ribeiro" ] = 0000
+s$born = as.integer(s$born)
+
+# ==============================================================================
+# CHECK CONSTITUENCIES
+# ==============================================================================
+
+cat("Checking constituencies,", sum(is.na(s$constituency)), "missing...\n")
+for (i in na.omit(unique(s$constituency))) {
+
+  g = GET(paste0("https://", meta[ "lang"], ".wikipedia.org/wiki/", i))
+
+  if (status_code(g) != 200)
+    cat("Missing Wikipedia entry:", i, "\n")
+
+  g = xpathSApply(htmlParse(g), "//title", xmlValue)
+  g = gsub("(.*) – Wikipédia(.*)", "\\1", g)
+
+  if (gsub("\\s", "_", g) != i)
+    cat("Discrepancy:", g, "(WP) !=", i ,"(data)\n")
+
+}
+
+# ============================================================================
+# QUALITY CONTROL
+# ============================================================================
+
+# - might be missing: born (int of length 4), constituency (chr),
+#   photo (chr, folder/file.ext)
+# - never missing: sex (chr, F/M), nyears (int), url (chr, URL),
+#   party (chr, mapped to colors)
+
+cat("Missing", sum(is.na(s$born)), "years of birth\n")
+stopifnot(is.integer(s$born) & nchar(s$born) == 4 | is.na(s$born))
+
+cat("Missing", sum(is.na(s$constituency)), "constituencies\n")
+stopifnot(is.character(s$constituency))
+
+cat("Missing", sum(is.na(s$photo)), "photos\n")
+stopifnot(is.character(s$photo) & grepl("^photos(_\\w{2})?/(.*)\\.\\w{3}", s$photo) | is.na(s$photo))
+
+stopifnot(!is.na(s$sex) & s$sex %in% c("F", "M"))
+stopifnot(!is.na(s$nyears) & is.integer(s$nyears))
+# stopifnot(!is.na(s$url) & grepl("^http(s)?://(.*)", s$url)) ## used as uids
+stopifnot(s$party %in% names(colors))

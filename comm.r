@@ -15,11 +15,11 @@ for (i in c("XII", "XI", "X")) {
 
     f = paste0("raw/indexes/committees-", i, "-", j, ".html")
 
-    if(!file.exists(f))
+    if (!file.exists(f))
       try(download.file(paste0(r, i, "LEG/Paginas/", j, ".aspx"), f,
                         mode = "wb", quiet = TRUE), silent = TRUE)
 
-    if(!file.info(f)$size) {
+    if (!file.info(f)$size) {
 
       cat("Failed to download committee index", f, "\n")
       file.remove(f)
@@ -33,16 +33,16 @@ for (i in c("XII", "XI", "X")) {
 
     cat("Legislature", i, j, ":", length(h), "committee(s)\n")
 
-    for(k in h) {
+    for (k in h) {
 
       f = paste0("raw/committees/committee-", i, "-", basename(k), ".html")
 
-      if(!file.exists(f))
+      if (!file.exists(f))
         try(download.file(paste0("http://www.parlamento.pt", k,
                                  "/Apresentacao/Paginas/Composicao.aspx"), f,
                           mode = "wb", quiet = TRUE), silent = TRUE)
 
-      if(!file.info(f)$size) {
+      if (!file.info(f)$size) {
 
         cat("Failed to download committee", k, "\n")
         file.remove(f)
@@ -54,7 +54,7 @@ for (i in c("XII", "XI", "X")) {
         html_nodes(xpath = "//a[contains(@href, 'Biografia.aspx')]") %>%
         html_attr("href")
 
-      if(length(h) > 0)
+      if (length(h) > 0)
         c = rbind(c, data_frame(
           legislature = i,
           type = j,
@@ -76,14 +76,14 @@ c$id = paste0(c$legislature, c$name)
 
 cat("Building co-membership matrix...\n")
 
-comm = data.frame(u = paste0(c$legislature, c$name), stringsAsFactors = FALSE)
+comm = data_frame(u = paste0(c$legislature, c$name))
 sponsors = unlist(strsplit(c$members, ";")) %>% unique
 
 # add sponsor columns
-for(i in sponsors)
+for (i in sponsors)
   comm[, i ] = 0
 
-for(i in colnames(comm)[ -1 ])
+for (i in colnames(comm)[ -1 ])
   comm[ , i ] = as.numeric(sapply(c$members, strsplit, ";") %>%
                              sapply(function(x) i %in% x))
 
@@ -94,18 +94,18 @@ stopifnot(rowSums(comm[, -1 ]) == c$n_members)
 c$legislature = substr(legislatures[ c$legislature ], 1, 4)
 
 # assign co-memberships to networks for l. 10-12
-for(i in ls(pattern = "^net_")[ 5:7 ]) {
+for (i in ls(pattern = "^net_")[ 5:7 ]) {
 
   n = get(i)
 
   sp = network.vertex.names(n)
-  names(sp) = n %v% "url"
+  names(sp) = gsub("\\D", "", n %v% "url")
 
   missing = !names(sp) %in% colnames(comm)
-  if(sum(missing) > 0) {
+  if (sum(missing) > 0) {
 
     cat(i, ": adding", sum(missing), "MP(s) with no membership(s)\n")
-    for(j in names(sp)[ missing ]) {
+    for (j in names(sp)[ missing ]) {
       comm[, j ] = 0
     }
 
@@ -124,12 +124,10 @@ for(i in ls(pattern = "^net_")[ 5:7 ]) {
   colnames(m) = sp[ colnames(m) ]
   rownames(m) = sp[ rownames(m) ]
 
-  e = data.frame(i = n %e% "source",
-                 j = n %e% "target",
-                 stringsAsFactors = FALSE)
+  e = data_frame(i = n %e% "source", j = n %e% "target")
   e$committee = NA
 
-  for(j in 1:nrow(e))
+  for (j in 1:nrow(e))
     e$committee[ j ] = m[ e$i[ j ], e$j[ j ] ]
 
   cat(" co-memberships:",
