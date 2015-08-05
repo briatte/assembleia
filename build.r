@@ -87,8 +87,8 @@ for (ii in legislatures %>% names) {
 
   n %n% "country" = meta[ "cty" ] %>% as.character
   n %n% "lang" = meta[ "lang" ] %>% as.character
-  n %n% "years" = legislatures[ ii ]
-  n %n% "legislature" = ii
+  n %n% "years" = legislatures[ ii ] %>% as.character
+  n %n% "legislature" = ii %>% as.character
   n %n% "chamber" = meta[ "ch" ] %>% as.character
   n %n% "type" = meta[ "type" ] %>% as.character
   n %n% "ipu" = meta[ "ipu" ] %>% as.integer

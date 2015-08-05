@@ -402,6 +402,7 @@ s$born = as.integer(s$born)
 # CHECK CONSTITUENCIES
 # ==============================================================================
 
+s$constituency = gsub("\\s", "_", s$constituency)
 cat("Checking constituencies,", sum(is.na(s$constituency)), "missing...\n")
 for (i in na.omit(unique(s$constituency))) {
 
