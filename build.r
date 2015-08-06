@@ -21,9 +21,9 @@ for (ii in legislatures %>% names) {
 
   cat(":", nrow(data), "cosponsored documents, ")
 
-  #
-  # directed edge list
-  #
+  # ============================================================================
+  # DIRECTED EDGE LIST
+  # ============================================================================
 
   edges = lapply(data$sponsors, function(d) {
 
@@ -36,9 +36,9 @@ for (ii in legislatures %>% names) {
 
   }) %>% bind_rows
 
-  #
-  # edge weights
-  #
+  # ============================================================================
+  # EDGE WEIGHTS
+  # ============================================================================
 
   # first author self-loops, with counts of cosponsors
   self = subset(edges, i == j)
@@ -79,9 +79,9 @@ for (ii in legislatures %>% names) {
 
   cat(nrow(edges), "edges, ")
 
-  #
-  # directed network
-  #
+  # ============================================================================
+  # DIRECTED NETWORK
+  # ============================================================================
 
   n = network(edges[, 1:2 ], directed = TRUE)
 
@@ -97,7 +97,12 @@ for (ii in legislatures %>% names) {
   n %n% "n_cosponsored" = nrow(data)
   n %n% "n_sponsors" = table(subset(b, legislature == ii)$n_au)
 
+  # ============================================================================
+  # VERTEX-LEVEL ATTRIBUTES
+  # ============================================================================
+
   n_au = as.vector(n_au[ network.vertex.names(n) ])
+
   n %v% "n_au" = ifelse(is.na(n_au), 0, n_au)
 
   n_co = as.vector(n_co[ network.vertex.names(n) ])
@@ -129,9 +134,9 @@ for (ii in legislatures %>% names) {
   set.edge.attribute(n, "nfw", edges$nfw) # Newman-Fowler weights
   set.edge.attribute(n, "gsw", edges$gsw) # Gross-Shalizi weights
 
-  #
-  # network plot
-  #
+  # ============================================================================
+  # SAVE PLOTS
+  # ============================================================================
 
   if (plot) {
 
@@ -142,17 +147,17 @@ for (ii in legislatures %>% names) {
 
   }
 
-  #
-  # save objects
-  #
+  # ============================================================================
+  # SAVE OBJECTS
+  # ============================================================================
 
   assign(paste0("net_pt", substr(legislatures[ ii ], 1, 4)), n)
   assign(paste0("edges_pt", substr(legislatures[ ii ], 1, 4)), edges)
   assign(paste0("bills_pt", substr(legislatures[ ii ], 1, 4)), data)
 
-  #
-  # export gexf
-  #
+  # ============================================================================
+  # SAVE GEXF
+  # ============================================================================
 
   if (gexf) {
 
@@ -164,6 +169,3 @@ for (ii in legislatures %>% names) {
 
 if (gexf)
   zip("net_pt.zip", dir(pattern = "^net_pt\\d{4}-\\d{4}\\.gexf$"))
-
-save(list = ls(pattern = "^(net|edges|bills)_pt\\d{4}$"),
-     file = "data/net_pt.rda")
