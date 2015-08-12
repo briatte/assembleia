@@ -1,7 +1,3 @@
-dir.create("raw/mps"     , showWarnings = FALSE)
-dir.create("raw/bills"   , showWarnings = FALSE)
-dir.create("raw/indexes" , showWarnings = FALSE)
-
 sponsors = "data/sponsors.csv"
 bills = "data/bills.csv"
 
