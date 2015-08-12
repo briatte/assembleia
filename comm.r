@@ -3,8 +3,6 @@
 # due to bad server-side parameters, the scraper will fail to get the inquiry
 # committees from l. 11-12 and will also fail to get a few more subcommittees
 
-dir.create("raw/committees" , showWarnings = FALSE)
-
 r = "http://www.parlamento.pt/sites/COM/"
 c = data_frame()
 
