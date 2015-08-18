@@ -8,9 +8,9 @@ This repository contains code to build cosponsorship networks from bills passed 
 
 Replicate by running `make.r` in R.
 
-The `data.r` script downloads information on bills and sponsors. Unfortunately, the scraper is _highly_ error-prone, as explained at the top of the script. All photos should download fine, however.
+The `data.r` script downloads information on bills and sponsors. Unfortunately, the scraper is _highly_ error-prone, as explained at the top of the script: multiple re-runs are required to successfully collect all bills. All photos should download fine.
 
-See also Ricardo Lafuente's [Python scraper for bills](https://github.com/rlafuente/scraper-iniciativas), which also runs slowly but might be more efficient overall, as well as his [listing of Portuguese MPs](https://github.com/centraldedados/parlamento-deputados), which is similar to the one collected by this repository.
+See also Ricardo Lafuente's [Python scraper for bills](https://github.com/rlafuente/scraper-iniciativas), which also runs slowly but is certainly more efficient overall, as well as his [listing of Portuguese MPs](https://github.com/centraldedados/parlamento-deputados), which is similar to the one collected by this repository.
 
 The `build.r` script then assembles the edge lists and plots the networks, with the help of a few routines coded into `functions.r`. Adjust the `plot`, `gexf` and `mode` parameters to skip the plots or to change the node placement algorithm.
 
@@ -18,17 +18,18 @@ The `build.r` script then assembles the edge lists and plots the networks, with 
 
 ## Bills
 
-- `legislature` -- legislature number
+- `legislature` -- legislature number (Roman number, VI-XII)
 - `session` -- legislature session
 - `ref` -- bill local identifier (number/legislature)
 - `title` -- title
 - `bid` -- bill unique identifier
-- `authors` -- party sponsors
-- `sponsors` -- individual sponsors, using unique identifiers
+- `authors` -- party affiliation(s) of the individual sponsor(s)
+- `sponsors` -- individual sponsor(s), as numeric identifiers
+- `n_au` -- number of sponsors on the bill
 
 ## Sponsors
 
-The sponsors data have multiple entries for each sponsor (one per legislature in which the sponsor sat).
+The sponsors data have multiple rows for each sponsor (one per legislature in which the sponsor sat).
 
 - `url` -- unique numeric identifier, from the profile URL
 - `legislature` -- legislature of activity
@@ -38,7 +39,7 @@ The sponsors data have multiple entries for each sponsor (one per legislature in
 - `born` -- year of birth
 - `party` -- political party, abbreviated
 - `constituency` -- constituency
-- `photo` -- a dummy to indicate whether the sponsor has a photo or not
+- `photo` -- URL to the online photo of the sponsor
 - `nyears` -- seniority (time in office since legislature 6), in years
 
-Notes -- constituencies are standardized to Wikipedia English handles (except for "Portuguese outside Europe"), and genders have been checked to ensure that male and female names do not overlap.
+Constituencies are standardized to Wikipedia Português handles (except for "Portuguese outside Europe"), and genders have been checked to ensure that male and female names do not overlap.
