@@ -25,7 +25,7 @@ for (i in c("XII", "XI", "X")) {
 
     }
 
-    h = html(f) %>%
+    h = read_html(f) %>%
       html_nodes("tr.ARTabResultadosLinhaPar a") %>%
       html_attr("href")
 
@@ -48,7 +48,7 @@ for (i in c("XII", "XI", "X")) {
 
       }
 
-      h = html(f) %>%
+      h = read_html(f) %>%
         html_nodes(xpath = "//a[contains(@href, 'Biografia.aspx')]") %>%
         html_attr("href")
 

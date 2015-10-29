@@ -27,15 +27,15 @@ for (i in c("XII", "XI", "X", "IX", "VIII", "VII", "VI")) {
     u = "http://www.parlamento.pt/ActividadeParlamentar/Paginas/IniciativasLegislativas.aspx"
     p = GET(u)
 
-    ev = html(p) %>%
+    ev = read_html(p) %>%
       html_node(xpath = "//input[@name='__EVENTVALIDATION']") %>%
       html_attr("value")
 
-    vs = html(p) %>%
+    vs = read_html(p) %>%
       html_node(xpath = "//input[@name='__VIEWSTATE']") %>%
       html_attr("value")
 
-    rd = html(p) %>%
+    rd = read_html(p) %>%
       html_node(xpath = "//input[@name='__REQUESTDIGEST']") %>%
       html_attr("value")
 
@@ -73,7 +73,7 @@ for (i in c("XII", "XI", "X", "IX", "VIII", "VII", "VI")) {
 
       d = POST(u, body = pinfo, cookies = p$cookies)
 
-      if (html(d) %>% html_node("title") %>% html_text %>% str_trim == "Erro") {
+      if (read_html(d) %>% html_node("title") %>% html_text %>% str_trim == "Erro") {
 
         cat(": failed\n")
         next
@@ -84,15 +84,15 @@ for (i in c("XII", "XI", "X", "IX", "VIII", "VII", "VI")) {
                  paste0("raw/indexes/bills-", i, # "-session-", k,
                         "-page-", sprintf("%02.0f", j), ".html"))
 
-      ev = html(d) %>%
+      ev = read_html(d) %>%
         html_node(xpath = "//input[@name='__EVENTVALIDATION']") %>%
         html_attr("value")
 
-      vs = html(d) %>%
+      vs = read_html(d) %>%
         html_node(xpath = "//input[@name='__VIEWSTATE']") %>%
         html_attr("value")
 
-      rd = html(d) %>%
+      rd = read_html(d) %>%
         html_node(xpath = "//input[@name='__REQUESTDIGEST']") %>%
         html_attr("value")
 
@@ -102,7 +102,7 @@ for (i in c("XII", "XI", "X", "IX", "VIII", "VII", "VI")) {
           "RD", substr(rd, 1, 10),
           "\n")
 
-      l = html(d) %>%
+      l = read_html(d) %>%
         html_nodes(xpath = "//a[starts-with(@href, 'javascript:__do')]") %>%
         html_attr("href")
 
@@ -120,7 +120,7 @@ for (i in c("XII", "XI", "X", "IX", "VIII", "VII", "VI")) {
 
     for (j in p) {
 
-      t = html(j) %>%
+      t = read_html(j) %>%
         html_nodes("#ctl00_ctl43_g_889e27d8_462c_47cc_afea_c4a07765d8c7_ctl00_gvResults tr")
 
       # session
@@ -211,7 +211,7 @@ if (!file.exists(bills)) {
 
     setTxtProgressBar(w, which(p == i))
 
-    h = html(i) %>%
+    h = read_html(i) %>%
       html_nodes("#ctl00_ctl43_g_11b3c0cd_3bce_44ea_a8db_08db0682f787_ctl00_pnlAutoresD a") %>%
       html_attr("href")
 
@@ -270,7 +270,7 @@ if (!file.exists(sponsors)) {
 
     } else {
 
-      h = html(f)
+      h = read_html(f)
 
       s = rbind(s, data_frame(
         url = gsub("\\D", "", i),
