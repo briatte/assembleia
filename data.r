@@ -1,3 +1,13 @@
+legislatures = c(
+  "VI" = "1991-1995",
+  "VII" = "1995-1999",
+  "VIII" = "1999-2002",
+  "IX" = "2002-2005",
+  "X" = "2005-2009",
+  "XI" = "2009-2011",
+  "XII" = "2011-2015"
+)
+
 sponsors = "data/sponsors.csv"
 bills = "data/bills.csv"
 
@@ -121,22 +131,22 @@ for (i in c("XII", "XI", "X", "IX", "VIII", "VII", "VI")) {
     for (j in p) {
 
       t = read_html(j) %>%
-        html_nodes("#ctl00_ctl43_g_889e27d8_462c_47cc_afea_c4a07765d8c7_ctl00_gvResults tr")
+        html_nodes("table#ctl00_ctl43_g_889e27d8_462c_47cc_afea_c4a07765d8c7_ctl00_gvResults tr")
 
       # session
-      l = sapply(t, html_node, xpath = "td[3]")
+      l = sapply(t, html_nodes, xpath = "td[3]")
 
       # bill ref
-      n = sapply(t, html_node, xpath = "td[2]/span")
+      n = sapply(t, html_nodes, xpath = "td[2]/span")
 
       # bill title
-      d = sapply(t, html_node, xpath = "td[4]/a")
+      d = sapply(t, html_nodes, xpath = "td[4]/a")
 
       # authors (parties)
-      a = sapply(t, html_node, xpath = "td[5]")
+      a = sapply(t, html_nodes, xpath = "td[5]")
 
       # find valid rows
-      k = which(!sapply(n, is.null))
+      k = which(sapply(n, length) > 0)
 
       xx = d[ k ] %>% sapply(html_attr, "href") %>% gsub("\\D", "", .)
       stopifnot(!is.na(xx))
@@ -144,11 +154,11 @@ for (i in c("XII", "XI", "X", "IX", "VIII", "VII", "VI")) {
       # subset all lists
       b = rbind(b, data_frame(
         legislature = i,
-        session = l[ k ] %>% sapply(html_text) %>% as.integer,
-        ref = n[ k ] %>% sapply(html_text),
-        title = d[ k ] %>% sapply(html_text),
-        bid = d[ k ] %>% sapply(html_attr, "href") %>% gsub("\\D", "", .),
-        authors = a[ k ] %>% sapply(html_text) %>% str_trim
+        session = l[ k ] %>% sapply(html_text) %>% unlist %>% as.integer,
+        ref = n[ k ] %>% sapply(html_text) %>% unlist,
+        title = d[ k ] %>% sapply(html_text) %>% unlist,
+        bid = d[ k ] %>% sapply(html_attr, "href") %>% unlist %>% gsub("\\D", "", .),
+        authors = a[ k ] %>% sapply(html_text) %>% unlist %>% str_trim
       ))
 
     }
@@ -169,7 +179,7 @@ for (i in c("XII", "XI", "X", "IX", "VIII", "VII", "VI")) {
 
   # download the bills
 
-  for (j in b$bid) {
+  for (j in na.omit(b$bid)) {
 
       f = paste0("raw/bills/bill-", j, ".html")
 
@@ -358,13 +368,14 @@ for (i in p) {
     gsub("&type=deputado", ".jpg", .)
 
   if (!file.exists(f))
-    try(download.file(i, f, mode = "wb", quiet = TRUE),
-        silent = TRUE)
+    try(download.file(i, f, mode = "wb", quiet = TRUE), silent = TRUE)
 
-  if (!file.info(f)$size) {
+  if (!file.exists(f) || !file.info(f)$size) {
 
     s$photo[ s$photo == i ] = NA
-    file.remove(f)
+
+    if (file.exists(f))
+      file.remove(f)
 
   } else {
 
@@ -374,7 +385,7 @@ for (i in p) {
 
 }
 
-cat("\n", n_distinct(s$url[ s$photo == "0" ]), "photos failed to download.\n")
+cat("\n", n_distinct(s$url[ s$photo == "0" ]), "photo(s) failed to download.\n")
 
 # fix missing age values (source: WP-PT unless noted otherwise)
 # s$born[ s$name == "Carlos Matos" ] = 0000

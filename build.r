@@ -1,13 +1,3 @@
-legislatures = c(
-  "VI" = "1991-1995",
-  "VII" = "1995-1999",
-  "VIII" = "1999-2002",
-  "IX" = "2002-2005",
-  "X" = "2005-2009",
-  "XI" = "2009-2011",
-  "XII" = "2011-2015"
-)
-
 # remove one bill with single case of missing sponsor
 b = filter(b, !(legislature == "VI" & sponsors == "263;213"))
 
